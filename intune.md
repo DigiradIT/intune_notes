@@ -23,21 +23,51 @@ Once we have determined a process in testing we will only need to role this out 
 ### Sign-in and auth up
 Sign-in and get pim access.  Document exactly what perms are needed.
 
+**Notes**
+For me activating the role and putting in a note takes about 5 minutes (counting downtime waiting for the role to apply).  I haven't had issues with Intune not recognizing my PIM role.
+
 **Questions**
 1. [ ]?Can we make this any faster? -> Patrick
 2. [ ]?Are staff comfortable with PIM as is? -> Ken
-3. [ ]?Will this access be part of our access review process? -> Emin
+3. [ ]?Who should have Intune admin role in PIM? -> Ken
+4. [ ]?Will this access be part of our access review process? -> Emin 
+5. [ ]?Can Security access with current permissions? -> Emin (accepted 5/21)
 
 ### Check machine status
 Are current computers joined showing online.  Ken and Patrick should each have a joined machine.
 
+**Notes**
+Both Machines show up, but mine is taking some time to update it's last check-in time.  Something to consider when looking for non-compliant computers.
+
+We can route logs to log analytics.  I have configured all logs to be shipped for now [MSFT Docs](https://learn.microsoft.com/en-us/mem/intune/fundamentals/review-logs-using-azure-monitor).
+
+
+
 **Questions**
-1. [ ]?Ken and patrick PCs joined and in sync? -> Patrick, Ken
-2. [ ]?Can this report back to Log Analytics? -> Patrick, Emin
+1. [x]?Ken and patrick PCs joined and in sync? -> Patrick, Ken
+2. [x]?Can this report back to Log Analytics? -> Patrick, Emin
+2. [ ]?Are logs showing up? -> Emin (asked via Teams 5/21)
 
 ### Simple GPOS 
-Can we push simple GPOs, if not reconsider Intune.:
-1. [ ]Bitlocker
+Can we push simple GPOs, if not reconsider Intune.
+
+**Notes**
+Endpoint policy is applied, but the status of the devices in reporting is not 
+Bitlocker worked on my machine and on Ken's test machine.
+
+Devices have the endpoint policy applied but when I check their endpoint status in reporting it shows their MDE status as not enrolled.  I don't know if this is significant, but we should look into it further.
+
+Intune must be connected with Microsoft Defender, I enabled this following [MSFT Instructions](https://learn.microsoft.com/en-us/mem/intune/protect/advanced-threat-protection-configure#connect-microsoft-defender-for-endpoint-to-intune).  I needed global admin active to make the change.
+
+Intune is now connected to MSFT defender and I've enabled EDR.  It will take time for this setting to make it out to the endpoints.
+
+Having issues with performing actions on my machine:
+  - Quick scan for defender is stuck in pending.
+  - Collect diagnostics is stuck in pending
+
+Created a policy for setting a login banner, but it has not been applied to my machine after two reboots.  Will give it some more time to see if it applies.  I am on a reliable network connection.
+
+1. [x]Bitlocker
 2. [ ]Endpoint Security enrollment/configuration.
 3. [ ]Login Banner 
 4. [ ]Dekstop Shortcuts
@@ -71,6 +101,9 @@ Can we enroll in remote support and request/join systems?  Is the experience com
 Proper install of TailScale with network joining experience that is accessible to a user.  Connecting should be as **simple or simpler** for a hurried user as the current experience? 
 1. [ ]Connect and verify configuration
 
+**Tasks**
+- [ ]Emin permissions for tailscale.  Need to research level required and submit change request and get it approved.
+
 **Questions**
 1.[ ]?Do we like our device groups as they are now or do we want to narrow down, should use our connection logging in tailscale for this? -> Patrick, Ken, Emin
 2.[ ]?Can we think of any groups that don't need connection? -> Ken, Vince
@@ -84,7 +117,7 @@ Run through process for lost or stolen device.  Use the existing procedure as a 
 Should be usable to a user with the assistance of a supervisor.  Should take no longer than 1 hour to complete.  Think about laziness here, are there setup steps that can be done after the first login has completed?
 
 ## General Lines of Inquiry 
-- Security DWMs through Intune, can we support our current list?  If not are the unsupported ones unessential -> Emin
+- Security DWMs through Intune, can we support our current list?  If not are the unsupported ones unessential -> Emin (talked about this with Emin on 5/22)
 - Local session duration - how long until all remembered credentials are wiped or invalidated?   Can we setup a deadman's switch here? -> Emin, Patrick
 - Can we use this for server monitoring and update? -> Ken, Adrian
 - Deadman switch for complete wipe (will have significant security and operational impact, run through with Ken)?  -> Emin, Patrick, Ken
@@ -98,6 +131,7 @@ Should be usable to a user with the assistance of a supervisor.  Should take no 
 ## Security Considerations
 - How can we use increased information for access control.  Can we use the Intune status of a machine in our PIM policies?
 - How deeply can we integrate into Log Analytics?  What data is interesting?
+- Testing vulnerability scanning - can we report on this? -> Emin (mentioned in meeting on 5/22)
 
 ## Management Considerations
 - Reporting and visibility - are there metrics or trends that would be valuable to internal stake holders?
